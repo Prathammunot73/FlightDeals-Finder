@@ -6,19 +6,33 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-SHEETY_PRICES_ENDPOINT= "SHEETY ENDPOINT"
+SHEETY_PRICES_ENDPOINT= "https://api.sheety.co/fa179106036defe96a8eafa0f261bfec/flightData/prices"
 
 class DataManager:
 
     def __init__(self):
-        self.user=os.environ["SHEETY_USERNAME"]
-        self.password=os.environ["SHEETY_PASSWORD"]
-        self.authorization=HTTPBasicAuth(self.user,self.password)
+        self._user=os.environ["SHEETY_USERNAME"]
+        self._password=os.environ["SHEETY_PASSWORD"]
+        self._authorization=HTTPBasicAuth(self._user,self._password)
         self.destination_data={}
 
     def get_destination_data(self):
         #use sheety api to get all data in sheet and print it out
-        response=requests.get(url=SHEETY_PRICES_ENDPOINT,auth=self.authorization)
+        response=requests.get(url=SHEETY_PRICES_ENDPOINT,auth=self._authorization)
         data=response.json()
         self.destination_data=data["prices"]
         return self.destination_data #print data
+
+    #update price in spreadsheet
+    def update_lowest_price(self,row_id,new_price):
+        new_data={
+            "prices":{
+                "lowestPrice":new_price
+            }
+        }
+        requests.put(
+            url=f"{SHEETY_PRICES_ENDPOINT}/{row_id}",
+            json=new_data,
+            auth=self._authorization
+        )
+
