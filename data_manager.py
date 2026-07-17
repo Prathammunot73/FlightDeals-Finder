@@ -35,4 +35,3 @@ class DataManager:
             json=new_data,
             auth=self._authorization
         )
-

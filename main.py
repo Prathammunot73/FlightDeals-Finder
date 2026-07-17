@@ -54,9 +54,16 @@ for destination in sheet_data:
         cheapest_flight=find_cheapest_flight(stopover_flights,return_date=six_month_from_today.strftime("%Y-%m-%d"))
         print(f"Cheapest indirect flight price is: GBP {cheapest_flight.price}")
 
-        #send sms
-        notification_manager.send_sms(
-            message_body=f"Low price alert! Only GBP {cheapest_flight.price} to fly "
-                        f"from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport}, "
-                        f" on {cheapest_flight.out_date} until {cheapest_flight.return_date}."
+        #send sms & whatsapp msg
+        message = (
+            f"✈️ Low Price Alert!\n\n"
+            f"Only GBP {cheapest_flight.price}\n"
+            f"From: {cheapest_flight.origin_airport}\n"
+            f"To: {cheapest_flight.destination_airport}\n"
+            f"Departure: {cheapest_flight.out_date}\n"
+            f"Return: {cheapest_flight.return_date}"
         )
+
+        notification_manager.send_sms(message)
+
+        notification_manager.send_whatsapp(message)
