@@ -7,7 +7,6 @@ A Python application that searches for cheap flight deals using Google Flights (
 - Search flight prices using Google Flights (SerpAPI)
 - Find direct and indirect flights
 - Compare flight prices with stored lowest prices
-- Update lowest prices in Google Sheets using Sheety
 - Send SMS notifications using Twilio
 - Send WhatsApp notifications using Twilio WhatsApp Sandbox
 - Store API keys securely using environment variables (`.env`)
@@ -20,7 +19,6 @@ A Python application that searches for cheap flight deals using Google Flights (
 - Sheety API
 - Twilio API
 - Requests
-- Requests Cache
 - Python Dotenv
 
 ## 📂 Project Structure
