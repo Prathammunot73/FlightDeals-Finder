@@ -29,7 +29,7 @@ tomorrow=datetime.now()+ timedelta(days=1)
 six_month_from_today=datetime.now()+ timedelta(days=(6*30))
 ORIGIN_CITY_IATA="LHR" #london heathrow
 
-#--find cheap flights
+#--find cheap flights--
 for destination in sheet_data:
     pprint(f"Getting flights for {destination['city']}...")
     flights=flight_search.check_flights(
@@ -41,9 +41,18 @@ for destination in sheet_data:
     cheapest_flight = find_cheapest_flight(flights, return_date=six_month_from_today.strftime("%Y-%m-%d"))
     pprint(f"{destination['city']}: GBP {cheapest_flight.price}")
 
-    if cheapest_flight.price != "N/A" and cheapest_flight.price < destination["lowestPrice"]:
-        pprint(f"Lower price flight found to {destination['city']}!")
-        data_manager.update_lowest_price(destination["id"], cheapest_flight.price)
+    #--search for indirect flight if N/A---
+    if cheapest_flight.price== "N/A":
+        print(f"No direct flight to {destination['city']}. Looking for indirect flight...")
+        stopover_flights=flight_search.check_flights(
+            ORIGIN_CITY_IATA,
+            destination["iataCode"],
+            from_time=tomorrow,
+            to_time=six_month_from_today,
+            is_direct=False
+        )
+        cheapest_flight=find_cheapest_flight(stopover_flights,return_date=six_month_from_today.strftime("%Y-%m-%d"))
+        print(f"Cheapest indirect flight price is: GBP {cheapest_flight.price}")
 
         #send sms
         notification_manager.send_sms(

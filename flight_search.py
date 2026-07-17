@@ -1,6 +1,6 @@
 import os
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv\
 
 # Load environment variables from .env file
 load_dotenv()
@@ -12,7 +12,7 @@ class FlightSearch:
     def __init__(self):
         self._api_key=os.environ["SERPAPI_API_KEY"]
 
-    def check_flights(self,origin_city_code,destination_city_code,from_time,to_time):
+    def check_flights(self,origin_city_code,destination_city_code,from_time,to_time,is_direct=True):
         parameters={
             "engine":"google_flights",
             "departure_id":origin_city_code,
@@ -25,6 +25,10 @@ class FlightSearch:
             "api_key":self._api_key,
         }
 
+        #only include stop parameter if is_direct is True
+        if is_direct:
+            parameters["stops"]="1"
+
         response=requests.get(url=SERPAPI_ENDPOINT,params=parameters)
 
         #check if the API request was successful(HTTP status code 200 = OK).
@@ -35,5 +39,6 @@ class FlightSearch:
         data=response.json()
         if "error" in data:
             print(f"API error: {data['error']}")
+            return None
         return data
 
